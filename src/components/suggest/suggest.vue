@@ -1,5 +1,5 @@
 <template>
-  <v-scroll class="suggest" ref="suggest" :data="result" :pullup="pullup" @scrollToEnd="searchMore">
+  <v-scroll class="suggest" ref="suggest" :data="result" :pullup="pullup" @scrollToEnd="searchMore" @beforeScroll="listScroll">
     <ul class="suggest-list">
       <li class="suggest-item" v-for="item in result" @click="selectItem(item)">
         <div class="icon">
@@ -18,20 +18,21 @@
       <v-loading v-show="hasMore" title=""></v-loading>
     </ul>
     <div class="no-result-wrapper" v-show="!hasMore && !result.length">
-      <v-no-result title="抱歉，暂无搜索结果"></v-no-result>
+      <v-no-result title="很抱歉，暂无搜索结果"></v-no-result>
     </div>
   </v-scroll>
 </template>
 
 <script>
-import {search} from '@/api/search'
-import {ERR_OK} from '@/api/config'
-import {createSong} from '@/common/js/song'
-import {getSongUrl} from '@/api/song'
 import vScroll from '@/base/scroll/scroll'
 import vLoading from '@/base/loading/loading'
 import Singer from '@/common/js/singer'
 import vNoResult from '@/base/no-result/no-result'
+import {search} from '@/api/search'
+import {ERR_OK} from '@/api/config'
+import {createSong} from '@/common/js/song'
+import {getSongUrl} from '@/api/song'
+import {mapMutations, mapActions} from 'vuex'
 
 const TYPE_SINGER = 'singer'
 const perpage = 20
@@ -62,6 +63,9 @@ export default {
     }
   },
   methods: {
+    refresh() {
+      this.$refs.suggest.refresh();
+    },
     selectItem(item) {
       if (item.type === TYPE_SINGER) {
         const singer = new Singer({
@@ -71,7 +75,11 @@ export default {
         this.$router.push({
           path: `/search/${singer.id}`
         });
+        this.setSinger(singer);
+      } else {
+        this.insertSong(item);
       }
+      this.$emit('select', item);
     },
     search() {
       this.page = 1;
@@ -80,7 +88,6 @@ export default {
       search(this.query, this.page, this.showSinger, perpage).then((res) => {
         if (res.code === ERR_OK) {
           this.result = this._getResult(res.data);
-          console.log(this.result);
           this._checkMore(res.data);
         }
       });
@@ -92,10 +99,13 @@ export default {
       this.page++;
       search(this.query, this.page, this.showSinger, perpage).then((res) => {
         if (res.code === ERR_OK) {
-          this.result = this.result.concat(this._genResult(res.data));
+          this.result = this.result.concat(this._getResult(res.data));
           this._checkMore(res.data);
         }
       });
+    },
+    listScroll() {
+      this.$emit('listScroll');
     },
     getIconCls(item) {
       if (item.type === TYPE_SINGER) {
@@ -113,7 +123,6 @@ export default {
     },
     _getResult(data) {
       let ret = [];
-      console.log(data);
       if (data.zhida && data.zhida.singerid) {
         ret.push({...data.zhida, ...{type: TYPE_SINGER}});
       }
@@ -142,11 +151,17 @@ export default {
       if (!song.list.length || (song.curnum + song.curpage * perpage) > song.totalnum) {
         this.hasMore = false;
       }
-    }
+    },
+    ...mapMutations({
+      setSinger: 'SET_SINGER'
+    }),
+    ...mapActions([
+      'insertSong'
+    ])
   },
   watch: {
-    query() {
-      this.search();
+    query(newQuery) {
+      this.search(newQuery);
     }
   }
 }

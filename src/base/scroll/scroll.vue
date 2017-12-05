@@ -22,10 +22,6 @@ export default {
       type: Array,
       default: null
     },
-    refreshDelay: {
-      type: Number,
-      default: 20
-    },
     listenScroll: {
       type: Boolean,
       default: false
@@ -35,6 +31,10 @@ export default {
       default: false
     },
     beforeScroll: {
+      type: Boolean,
+      default: false
+    },
+    refreshDelay: {
       type: Number,
       default: 20
     }
@@ -44,6 +44,7 @@ export default {
       if (!this.$refs.scroll) {
         return;
       }
+
       this.scroll = new BScroll(this.$refs.scroll, {
         probeType: this.probeType,
         click: this.click
