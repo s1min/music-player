@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # music
 
 > a music player
@@ -24,4 +23,3 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 # vue-music
 使用vue2.0实现的仿QQ音乐，webapp音乐播放器。
 技术栈：vue2.0+vue-router+vuex+webpack+jsonp
->>>>>>> e4f031737b84962408d9822f70293aa7e78b6e56
