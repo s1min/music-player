@@ -127,7 +127,7 @@ export default {
   bottom: 0
   width: 100%
   z-index: 200
-  background: #333333
+  background: #f4f4f4
   &.slide-enter-active, &.slide-leave-active
     transition: all 0.3s
   &.slide-enter, &.slide-leave-to
@@ -174,11 +174,11 @@ export default {
     font-size: 0
     .icon-ok
       font-size: $font-size-medium
-      color: $color-theme
+      color: #ffffff
       margin-right: 4px
     .text
       font-size: $font-size-medium
-      color: #aaaaaa
+      color: #ffffff
 
 </style>
 

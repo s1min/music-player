@@ -45,6 +45,7 @@ export default {
     font-size: $font-size-medium
     color: #aaaaaa
     &.active
-      background: #222222
-      color: $color-text
+      background: $color-theme
+      color: #ffffff
+      border-color: $color-theme
 </style>

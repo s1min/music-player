@@ -625,7 +625,7 @@ export default {
     width: 100%
     height: 60px
     background: #ffffff
-    box-shadow: 10px 0 10px 5px #dddddd;
+    box-shadow: 10px 0 20px 5px rgba(51, 51, 51, .1);
     &.mini-enter-active, &.mini-leave-active
       transition: all 0.4s
     &.mini-enter, &.mini-leave-to
